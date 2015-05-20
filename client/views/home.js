@@ -1,4 +1,7 @@
+panoLoader = 1000; // exposts panoLoader to console
+
 var effect;
+var camera;
 
 Template.home.events({
     'dblclick': function () {
@@ -15,7 +18,7 @@ Template.home.rendered = function () {
 
     var scene = new THREE.Scene();
     
-    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
     // camera.target = new THREE.Vector3(1, 0, 0);
     var controls = new THREE.VRControls( camera );
     scene.add(camera);
@@ -43,8 +46,7 @@ Template.home.rendered = function () {
     // sphere.position.z = -300
     // scene.add(sphere);
 
-    var panoLoader = new GSVPANO.PanoLoader();
-    var panoDepthLoader = new GSVPANO.PanoDepthLoader();
+    panoLoader = new GSVPANO.PanoLoader();
     panoLoader.setZoom(3);
 
     panoLoader.onPanoramaLoad = function() {
@@ -55,13 +57,19 @@ Template.home.rendered = function () {
         projection_sphere.material.map.needsUpdate = true;
         projection_sphere.material.map = new THREE.Texture( this.canvas );
         projection_sphere.material.map.needsUpdate = true;
-        centerHeading = panoLoader.heading;
 
-        panoDepthLoader.load(this.location.pano);
+        // panoDepthLoader.load(this.location.pano);
     };
 
     var location = new google.maps.LatLng(44.301945982379095, 9.211585521697998);
-    panoLoader.load(location);
+    var home = new google.maps.LatLng(42.0534995, -87.6964939);
+    var loc1 = new google.maps.LatLng(42.0568987, -87.6770544);
+    var loc2 = new google.maps.LatLng(48.85837, 2.294481);
+    var loc3 = new google.maps.LatLng(48.850019, 2.27969);
+    var loc4 = new google.maps.LatLng(-33.7969235, 150.9224326);
+    var loc5 = new google.maps.LatLng(42.0534995, -87.6964939);
+
+    panoLoader.load(loc1);
 
     function animate() {
         // sphere.rotation.y += 0.1;
@@ -71,6 +79,44 @@ Template.home.rendered = function () {
         manager.render( scene, camera );
         requestAnimationFrame( animate );
     }
+
+    $(window).on('keydown', function(e) {
+
+        switch (e.keyCode) {
+            // case 37:
+            //     camera.rotation.y += 0.03;
+            //     break;
+            // case 39:
+            //     camera.rotation.y += -0.03;
+            //     break;
+            // case 38:
+            //     camera.rotation.x += 0.03;
+            //     break;
+            // case 40:
+            //     camera.rotation.x += -0.03;
+            //     break;
+            // case 32:
+            //     x_rotation = 0;
+            //     camera.rotation.y = 0;
+            //     break;
+            case 49:
+                panoLoader.load(loc1);
+                console.log('blah');
+                break;
+            case 50:
+                panoLoader.load(loc2);
+                break;
+            case 51:
+                panoLoader.load(loc3);
+                break;
+            case 52:
+                panoLoader.load(loc4);
+                break;
+            case 53:
+                panoLoader.load(loc5);
+                break;
+        }
+    });
 
     animate();
 
@@ -83,3 +129,7 @@ Template.home.rendered = function () {
 
     window.addEventListener( 'resize', onWindowResize, false );
 };
+
+// function load_new_location(lat, lng) {
+
+// }
