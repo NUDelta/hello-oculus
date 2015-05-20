@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+}
+
+canvas {
+    background-color: black;
+    width: 100%;
+    height: 100%;
+}
+
+#map-canvas {
+    width: 50%;
+    height: 100%;
+    display: inline-block;
+}
+
+#pano {
+    width: 50%;
+    height: 200px;
+    display: inline-block;
+}
+
+.vr-instructions {
+    position: fixed;
+    top: 8px;
+    left: 8px;
+    color: white;
+}
