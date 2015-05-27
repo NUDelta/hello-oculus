@@ -9,3 +9,5 @@
     This is also known as 'models'.
 
 */
+
+Messages = new Mongo.Collection('messages');

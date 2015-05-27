@@ -1,7 +1,13 @@
-panoLoader = 1000; // exposts panoLoader to console
+panoLoader = 1000; // exposes panoLoader to console
 
+var active_user;
+var current_location;
 var effect;
 var camera;
+
+var x_cor = 42.0568987;
+var y_cor = -87.6770544;
+
 
 Template.home.events({
     'dblclick': function () {
@@ -10,6 +16,20 @@ Template.home.events({
 });
 
 Template.home.rendered = function () {
+    Locations.find().observeChanges({
+        added: function (id, fields) {
+            active_user = fields.uid;
+            current_location = new google.maps.LatLng(fields.latitude, fields.longitude);
+            panoLoader.load(current_location);
+        },
+        changed: function (id, fields) {
+            console.log('loading new location!');
+            current_location = new google.maps.LatLng(fields.latitude, fields.longitude);
+            panoLoader.load(current_location);
+        },
+    });
+
+
     var canvas = $('#thecanvas')[0];
     var renderer = new THREE.WebGLRenderer( { antialias: true, canvas: canvas, alpha: true,
       clearColor: 0x000000, clearAlpha: 0 } );
@@ -19,6 +39,7 @@ Template.home.rendered = function () {
     var scene = new THREE.Scene();
     
     camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 1000 );
+    camera.position.y = -350; // continue playing with this number
     // camera.target = new THREE.Vector3(1, 0, 0);
     var controls = new THREE.VRControls( camera );
     scene.add(camera);
@@ -50,11 +71,11 @@ Template.home.rendered = function () {
     panoLoader.setZoom(3);
 
     panoLoader.onPanoramaLoad = function() {
+        console.log('loaded!');
         var a = THREE.Math.degToRad(90-panoLoader.heading);
         projection_sphere.quaternion.setFromEuler(new THREE.Euler(0, a, 0, 'YZX'));
 
         projection_sphere.material.wireframe = false;
-        projection_sphere.material.map.needsUpdate = true;
         projection_sphere.material.map = new THREE.Texture( this.canvas );
         projection_sphere.material.map.needsUpdate = true;
 
@@ -62,14 +83,15 @@ Template.home.rendered = function () {
     };
 
     var location = new google.maps.LatLng(44.301945982379095, 9.211585521697998);
-    var home = new google.maps.LatLng(42.0534995, -87.6964939);
-    var loc1 = new google.maps.LatLng(42.0568987, -87.6770544);
-    var loc2 = new google.maps.LatLng(48.85837, 2.294481);
-    var loc3 = new google.maps.LatLng(48.850019, 2.27969);
-    var loc4 = new google.maps.LatLng(-33.7969235, 150.9224326);
-    var loc5 = new google.maps.LatLng(42.0534995, -87.6964939);
+    // var home = new google.maps.LatLng(42.0534995, -87.6964939);
+    current_location = location;
+    // var loc1 = new google.maps.LatLng(42.0568987, -87.6770544);
+    // var loc2 = new google.maps.LatLng(48.85837, 2.294481);
+    // var loc3 = new google.maps.LatLng(48.850019, 2.27969);
+    // var loc4 = new google.maps.LatLng(-33.7969235, 150.9224326);
+    // var loc5 = new google.maps.LatLng(42.0534995, -87.6964939);
 
-    panoLoader.load(loc1);
+    panoLoader.load(location);
 
     function animate() {
         // sphere.rotation.y += 0.1;
@@ -80,31 +102,39 @@ Template.home.rendered = function () {
         requestAnimationFrame( animate );
     }
 
+    var location;
     $(window).on('keydown', function(e) {
 
         switch (e.keyCode) {
-            // case 37:
-            //     camera.rotation.y += 0.03;
-            //     break;
-            // case 39:
-            //     camera.rotation.y += -0.03;
-            //     break;
-            // case 38:
-            //     camera.rotation.x += 0.03;
-            //     break;
-            // case 40:
-            //     camera.rotation.x += -0.03;
-            //     break;
+            case 37:
+                y_cor -= 0.0001;
+                location = new google.maps.LatLng(x_cor, y_cor);
+                panoLoader.load(location);
+                break;
+            case 39:
+                y_cor += 0.0001;
+                location = new google.maps.LatLng(x_cor, y_cor);
+                panoLoader.load(location);
+                break;
+            case 38:
+                x_cor -= 0.0001;
+                location = new google.maps.LatLng(x_cor, y_cor);
+                panoLoader.load(location);
+                break;
+            case 40:
+                x_cor += 0.0001;
+                var location = new google.maps.LatLng(x_cor, y_cor);
+                panoLoader.load(location);
+                break;
             // case 32:
             //     x_rotation = 0;
             //     camera.rotation.y = 0;
             //     break;
             case 49:
                 panoLoader.load(loc1);
-                console.log('blah');
                 break;
             case 50:
-                panoLoader.load(loc2);
+                panoLoader.load(home);
                 break;
             case 51:
                 panoLoader.load(loc3);

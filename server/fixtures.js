@@ -6,3 +6,5 @@
     (esp. if it's empty)
 
 */
+
+Locations.remove({});
