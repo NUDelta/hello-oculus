@@ -26,3 +26,13 @@ canvas {
     left: 8px;
     color: white;
 }
+
+#chat {
+    position: absolute;
+    left: 200;
+    top: 50px;
+    z-index: 0;
+    background-color: rgba(173, 23, 15, 0.3);
+    width: 800px;
+    height: 800px;
+}

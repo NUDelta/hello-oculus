@@ -24,10 +24,19 @@ Meteor.methods({
             console.log('Update to previous session processed.');
             Locations.update({ uid: uid }, obj);
         }
+
+        if (dist >= 15) {
+            DebugLocations.insert(obj);
+        }
     },
+    clearMessages: function() {
+        Messages.remove({});
+    }
 });
 
 function createToken() {
+    return 'Bob';
+
     var token = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
